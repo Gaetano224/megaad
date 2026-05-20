@@ -1,6 +1,6 @@
-# MegaAd Tracker - Web App
+# MegaAd - Web App
 
-Benvenuto in **MegaAd Tracker**, uno strumento web responsive e moderno per tracciare turni, mana e statistiche dei personaggi in tempo reale.
+Benvenuto in **MegaAd**, uno strumento web responsive e moderno per tracciare turni, mana e statistiche dei personaggi in tempo reale.
 
 Questo progetto è una **Web Application pura** sviluppata con tecnologie all'avanguardia:
 - **Vite** (Build tool ultra-veloce)
