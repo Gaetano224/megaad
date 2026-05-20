@@ -89,40 +89,11 @@ const GameTracker = () => {
         }
       }
 
-      // Decrease immobilize turns
-      if (player.immobilize && player.immobilizeTurns && player.immobilizeTurns > 0) {
-        const newTurns = player.immobilizeTurns - 1;
-        if (newTurns <= 0) {
-          updates = { ...updates, immobilize: false, immobilizeTurns: 0 };
-        } else {
-          updates.immobilizeTurns = newTurns;
-        }
-      }
-
-      // Decrease stun turns
-      if (player.stun && player.stunTurns && player.stunTurns > 0) {
-        const newTurns = player.stunTurns - 1;
-        if (newTurns <= 0) {
-          updates = { ...updates, stun: false, stunTurns: 0 };
-        } else {
-          updates.stunTurns = newTurns;
-        }
-      }
-
-      // Decrease slow turns
-      if (player.slow && player.slowTurns && player.slowTurns > 0) {
-        const newTurns = player.slowTurns - 1;
-        if (newTurns <= 0) {
-          updates = { ...updates, slow: false, slowTurns: 0 };
-        } else {
-          updates.slowTurns = newTurns;
-        }
-      }
-
       return { ...player, ...updates, health: Math.max(0, newHealth) };
     });
 
     setPlayers(newPlayers);
+    setMana(maxMana);
     setCurrentTurn(currentTurn + 1);
   };
 
