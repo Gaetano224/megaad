@@ -18,6 +18,10 @@ const PlayerSetup = () => {
   );
   const [openPopover, setOpenPopover] = useState<number | null>(null);
 
+  const isAlreadySelected = (heroName: string, currentIndex: number) => {
+    return selectedHeroes.some((h, idx) => idx !== currentIndex && h.name === heroName);
+  };
+
   const handleHeroSelect = (index: number, hero: Hero | null) => {
     const newHeroes = [...selectedHeroes];
     if (hero) {
@@ -66,11 +70,24 @@ const PlayerSetup = () => {
                     variant="outline"
                     role="combobox"
                     aria-expanded={openPopover === index}
-                    className="w-full h-14 justify-between text-base bg-card border-primary/30 hover:border-primary hover:shadow-glow transition-all pr-12"
+                    className="w-full h-14 justify-between text-base bg-card border-primary/30 hover:border-primary hover:shadow-glow transition-all pr-12 pl-3"
                   >
-                    <span className={cn(!hero.name && "text-muted-foreground")}>
-                      {hero.name || `Seleziona Eroe ${index + 1}`}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      {hero.image ? (
+                        <img 
+                          src={hero.image} 
+                          alt={hero.name}
+                          className="w-8 h-8 rounded object-contain bg-black/40 border border-primary/30 p-0.5"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded border border-dashed border-muted-foreground/30 flex items-center justify-center text-[10px] text-muted-foreground bg-muted/10">
+                          ?
+                        </div>
+                      )}
+                      <span className={cn(!hero.name && "text-muted-foreground")}>
+                        {hero.name || `Seleziona Eroe ${index + 1}`}
+                      </span>
+                    </div>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -80,21 +97,44 @@ const PlayerSetup = () => {
                     <CommandList>
                       <CommandEmpty>Nessun eroe trovato.</CommandEmpty>
                       <CommandGroup>
-                        {heroes.map((heroOption) => (
-                          <CommandItem
-                            key={heroOption.id}
-                            value={heroOption.name}
-                            onSelect={() => handleHeroSelect(index, heroOption)}
-                          >
-                            <Check
+                        {heroes.map((heroOption) => {
+                          const alreadySelected = isAlreadySelected(heroOption.name, index);
+                          return (
+                            <CommandItem
+                              key={heroOption.id}
+                              value={heroOption.name}
+                              onSelect={() => {
+                                if (alreadySelected) return;
+                                handleHeroSelect(index, heroOption);
+                              }}
                               className={cn(
-                                "mr-2 h-4 w-4",
-                                hero.name === heroOption.name ? "opacity-100" : "opacity-0"
+                                alreadySelected && "opacity-40 cursor-not-allowed pointer-events-none"
                               )}
-                            />
-                            {heroOption.name}
-                          </CommandItem>
-                        ))}
+                            >
+                              <div className="flex items-center justify-between w-full flex-row">
+                                <div className="flex items-center gap-2">
+                                  <Check
+                                    className={cn(
+                                      "h-4 w-4",
+                                      hero.name === heroOption.name ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {heroOption.image && (
+                                    <img 
+                                      src={heroOption.image} 
+                                      alt={heroOption.name}
+                                      className="w-8 h-8 rounded object-contain bg-black/40 border border-primary/20 p-0.5"
+                                    />
+                                  )}
+                                  <span>{heroOption.name}</span>
+                                </div>
+                                {alreadySelected && (
+                                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Già in Team</span>
+                                )}
+                              </div>
+                            </CommandItem>
+                          );
+                        })}
                       </CommandGroup>
                     </CommandList>
                   </Command>

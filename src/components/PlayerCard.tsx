@@ -109,7 +109,7 @@ const PlayerCard = ({ player, onUpdate }: PlayerCardProps) => {
           <img 
             src={player.image} 
             alt={player.name}
-            className="w-12 h-12 rounded-full object-cover border-2 border-primary/50"
+            className="w-14 h-14 rounded-lg object-contain bg-black/40 border border-primary/30 p-0.5 shadow-glow shrink-0"
           />
         )}
         <h3 className="text-xl font-bold text-foreground truncate flex-1">
