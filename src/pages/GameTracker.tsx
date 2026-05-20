@@ -62,7 +62,7 @@ const GameTracker = () => {
     setPlayers(newPlayers);
   };
 
-  const advanceTurn = () => {
+  const startTurn = () => {
     const newPlayers = players.map(player => {
       let newHealth = player.health;
       let updates: Partial<PlayerState> = {};
@@ -97,6 +97,43 @@ const GameTracker = () => {
     setCurrentTurn(currentTurn + 1);
   };
 
+  const endGlobalTurn = () => {
+    const newPlayers = players.map(player => {
+      const updates: Partial<PlayerState> = {};
+
+      if (player.immobilize && player.immobilizeTurns && player.immobilizeTurns > 0) {
+        const newTurns = player.immobilizeTurns - 1;
+        updates.immobilize = newTurns > 0;
+        updates.immobilizeTurns = newTurns > 0 ? newTurns : 0;
+      } else if (player.immobilize) {
+        updates.immobilize = false;
+        updates.immobilizeTurns = 0;
+      }
+
+      if (player.stun && player.stunTurns && player.stunTurns > 0) {
+        const newTurns = player.stunTurns - 1;
+        updates.stun = newTurns > 0;
+        updates.stunTurns = newTurns > 0 ? newTurns : 0;
+      } else if (player.stun) {
+        updates.stun = false;
+        updates.stunTurns = 0;
+      }
+
+      if (player.slow && player.slowTurns && player.slowTurns > 0) {
+        const newTurns = player.slowTurns - 1;
+        updates.slow = newTurns > 0;
+        updates.slowTurns = newTurns > 0 ? newTurns : 0;
+      } else if (player.slow) {
+        updates.slow = false;
+        updates.slowTurns = 0;
+      }
+
+      return { ...player, ...updates };
+    });
+
+    setPlayers(newPlayers);
+  };
+
   return (
     <div className="min-h-screen bg-background p-3 pb-6">
       <div className="max-w-2xl mx-auto space-y-4">
@@ -117,19 +154,28 @@ const GameTracker = () => {
 
         {/* Turn Counter */}
         <div className="bg-gradient-card border-2 border-accent/30 rounded-xl p-4 shadow-card sticky top-14 z-10 bg-background">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center flex-1">
               <p className="text-sm text-muted-foreground mb-1">Turno Attuale</p>
               <p className="text-3xl font-bold bg-gradient-gold bg-clip-text text-transparent">
                 {currentTurn}
               </p>
             </div>
-            <Button
-              onClick={advanceTurn}
-              className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold px-6 h-12"
-            >
-              Prossimo Turno
-            </Button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button
+                onClick={startTurn}
+                className="flex-1 sm:flex-initial bg-accent hover:bg-accent/90 text-accent-foreground font-bold px-6 h-12 active:scale-95 transition-all shadow-gold-glow"
+              >
+                Inizio Turno
+              </Button>
+              <Button
+                onClick={endGlobalTurn}
+                variant="outline"
+                className="flex-1 sm:flex-initial border-2 border-accent/50 hover:bg-accent/10 hover:border-accent text-accent font-bold px-6 h-12 active:scale-95 transition-all"
+              >
+                Fine Turno
+              </Button>
+            </div>
           </div>
         </div>
 

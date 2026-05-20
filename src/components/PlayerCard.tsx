@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Skull, Lock, Zap, Heart, Plus, Minus, Snail, Check } from "lucide-react";
+import { Skull, Lock, Zap, Heart, Plus, Minus, Snail } from "lucide-react";
 import { PlayerState } from "@/pages/GameTracker";
 import StatusDialog from "./StatusDialog";
 
@@ -91,48 +91,6 @@ const PlayerCard = ({ player, onUpdate }: PlayerCardProps) => {
       onUpdate({ heal: true, healAmount: data.amount, healTurns: data.turns });
     } else if (currentStatus === "slow") {
       onUpdate({ slow: true, slowTurns: data.turns });
-    }
-  };
-
-  const handleEndTurn = () => {
-    const updates: Partial<PlayerState> = {};
-
-    // Decrement immobilize
-    if (player.immobilize && player.immobilizeTurns && player.immobilizeTurns > 0) {
-      const newTurns = player.immobilizeTurns - 1;
-      if (newTurns <= 0) {
-        updates.immobilize = false;
-        updates.immobilizeTurns = 0;
-      } else {
-        updates.immobilizeTurns = newTurns;
-      }
-    }
-
-    // Decrement stun
-    if (player.stun && player.stunTurns && player.stunTurns > 0) {
-      const newTurns = player.stunTurns - 1;
-      if (newTurns <= 0) {
-        updates.stun = false;
-        updates.stunTurns = 0;
-      } else {
-        updates.stunTurns = newTurns;
-      }
-    }
-
-    // Decrement slow
-    if (player.slow && player.slowTurns && player.slowTurns > 0) {
-      const newTurns = player.slowTurns - 1;
-      if (newTurns <= 0) {
-        updates.slow = false;
-        updates.slowTurns = 0;
-      } else {
-        updates.slowTurns = newTurns;
-      }
-    }
-
-    // Apply the updates to player
-    if (Object.keys(updates).length > 0) {
-      onUpdate(updates);
     }
   };
 
@@ -232,15 +190,6 @@ const PlayerCard = ({ player, onUpdate }: PlayerCardProps) => {
           );
         })}
       </div>
-
-      {/* End Turn Button */}
-      <Button
-        onClick={handleEndTurn}
-        className="w-full bg-secondary/50 hover:bg-secondary/80 border border-primary/20 text-muted-foreground hover:text-foreground font-semibold h-10 transition-all hover:shadow-glow active:scale-[0.98] mt-3 gap-2"
-      >
-        <Check className="h-4 w-4 text-accent" />
-        Fine Turno
-      </Button>
       </div>
     </>
   );
